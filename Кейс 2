@@ -1,0 +1,21 @@
+class Plant:
+    def __init__(self, name):
+        self.name = name 
+
+    def grow(self):
+        print(f"{self.name} растет.")
+
+
+class Flower(Plant):
+    def __init__(self, name, color):
+        Plant.__init__(self, name)
+        self.color = color 
+
+    def grow(self):
+        print(f"{self.name} цветет {self.color} цветами!")
+
+
+rose = Flower("Роза", "красными")
+print(rose.name)
+print(rose.color) 
+rose.grow()  

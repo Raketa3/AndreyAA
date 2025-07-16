@@ -1,0 +1,72 @@
+unit WebModuleUnit1;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Web.HTTPApp, Data.DB, Data.SqlExpr;
+
+type
+  TWebModule1 = class(TWebModule)
+    SQLConnection1: TSQLConnection;
+    procedure WebModuleDefaultAction(Sender: TObject; Request: TWebRequest;
+      Response: TWebResponse; var Handled: Boolean);
+  private
+    function GetProductsList: string;
+  public
+  end;
+
+var
+  WebModuleClass: TComponentClass = TWebModule1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TWebModule1.WebModuleDefaultAction(Sender: TObject;
+  Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+begin
+  Response.Content := 
+    '<html><head><title>Список продуктов</title></head><body>' +
+    '<h1>Наши продукты</h1>' +
+    GetProductsList +
+    '</body></html>';
+  Handled := True;
+end;
+
+function TWebModule1.GetProductsList: string;
+var
+  Query: TSQLQuery;
+begin
+  Result := '<table border="1"><tr><th>Продукт</th><th>Цена</th></tr>';
+  
+  Query := TSQLQuery.Create(nil);
+  try
+    Query.SQLConnection := SQLConnection1;
+    Query.SQL.Text := 'SELECT ProductName, Price FROM Products';
+    Query.Open;
+    
+    while not Query.Eof do
+    begin
+      Result := Result + 
+        '<tr><td>' + Query.FieldByName('ProductName').AsString + '</td>' +
+        '<td>' + Query.FieldByName('Price').AsString + '</td></tr>';
+      Query.Next;
+    end;
+  finally
+    Query.Free;
+  end;
+  
+  Result := Result + '</table>';
+end;
+
+end.
+
+object SQLConnection1: TSQLConnection
+  DriverName = 'MSSQL'
+  Params.Strings = (
+    'HostName=localhost'
+    'DataBase=SimpleProducts'
+    'User_Name=ваш_логин'
+    'Password=ваш_пароль')
+  LoginPrompt = False
+end

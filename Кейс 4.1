@@ -1,0 +1,18 @@
+CREATE DATABASE SimpleProducts;
+GO
+
+USE SimpleProducts;
+GO
+
+CREATE TABLE Products (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    ProductName NVARCHAR(100) NOT NULL,
+    Price DECIMAL(10,2) NOT NULL
+);
+GO
+
+INSERT INTO Products (ProductName, Price) VALUES 
+('Молоко', 2.50),
+('Хлеб', 1.20),
+('Яйца', 3.00);
+GO
